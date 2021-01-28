@@ -124,6 +124,8 @@
                 'usebootstrapjs'    => TRUE,
                 'usebootbox'        => TRUE,
                 'usevue'            => FALSE,
+                'usedatetimepicker' => TRUE,
+                'usetiny'           => FALSE,                
             ];
             foreach (self::$configs as $cf)
             {

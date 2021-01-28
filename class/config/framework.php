@@ -44,7 +44,10 @@
         public const TABLE = self::DBPREFIX.'table';
         public const TEST = self::DBPREFIX.'fwtest';
         public const USER = self::DBPREFIX.'user';
-
+        public const PROJECT = self::DBPREFIX.'project';
+        public const NOTE = self::DBPREFIX.'note';
+        public const UPLOAD = self::DBPREFIX.'upload';
+        
         public const AUTHTOKEN     = 'X-APPNAME-TOKEN'; // The name of the authentication token field.
         public const AUTHKEY       = 'Some string of text.....'; // The key used to encode the token validation
 /**

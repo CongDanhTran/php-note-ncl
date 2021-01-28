@@ -16,6 +16,7 @@
  */
     class Home extends \Framework\SiteAction
     {
+        use \Support\NoCache;
 /**
  * Handle various contact operations /
  *

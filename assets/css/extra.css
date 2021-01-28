@@ -1,0 +1,132 @@
+.card-box {
+    border: 1px solid white;
+    width: 200px;
+    height: 150px;
+    opacity: 1;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    color: rgb(45, 59, 69);
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 5px 0;
+    border-radius: 4px;
+    display: inline-block;
+    margin: 10px;
+}
+
+.card-box-header {
+    box-sizing: border-box;
+    display: block;
+    position: relative;
+    width: 200px;
+    height: 60px;
+}
+
+.card-box-body {
+    box-sizing: border-box;
+    display: block;
+    position: relative;
+    width: 200px;
+
+}
+
+.card-link {
+    text-decoration: none;
+}
+
+.card-content {
+    margin: 10px 15px;
+}
+
+.card-header-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    overflow-wrap: break-word;
+}
+
+.card-header-des {
+    color:black;
+}
+
+.card-action-container {
+    box-sizing: border-box;
+    display: flex;
+    height: 2.5rem;
+}
+
+.card-action {
+    transition: color 0.2s;
+    flex: 0 0 25%;
+    display: flex;
+    justify-content: center;
+}
+
+.card-button-container {
+    display: table;
+    width: 200px;
+    height: 150px;
+}
+
+.card-big-button {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.panel-group .panel {
+
+    box-shadow: none;
+    border-color: #EEEEEE;
+    padding-bottom: 10px;
+}
+
+.panel-default > .panel-heading {
+    padding: 0;
+    border-radius: 5px;
+    color: #212121;
+    background-color: lightgray;
+    border-color: lightgray;
+
+
+}
+
+.panel-title {
+    font-size: 14pt;
+}
+
+.panel-title > a {
+    display: block;
+    padding-top: 15px;
+    padding-left: 15px;
+    text-decoration: none;
+}
+
+.content{
+    width: 100%;
+}
+
+.panel-body{
+
+    border: 1px solid white;
+    width: 100%;
+    opacity: 1;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.3) 0px 2px 5px 0;
+    padding:  20px;
+    border-radius: 5px;
+
+}
+
+.panel-text{
+    border: 1px black solid;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+.panel-attachments{
+    margin-top: 10px;
+}
+
+.form-group input[type="file"]{
+    height: auto;
+}

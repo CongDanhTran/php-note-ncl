@@ -1,36 +1,154 @@
+{% set ajax = TRUE %}
+{% set fwutils = TRUE %}
+{% set parsley = TRUE %}
+
 {% extends '@content/page.twig' %}
 
+{% import '@content/iconmacro.twig' as i %}
+{% import '@util/formmacro.twig' as f %}
+{% import '@util/modalmacro.twig' as m %}
+
+{% block setup %}
+    var clicks = [
+    ['delb', framework.dodelbean, ''],
+    ]
+{% endblock setup %}
+
 {% block onload %}
-    $('#alert').on('click', function(){
-        bootbox.alert('Hello World')
+    $('#addfform').on('submit', false).parsley()
+
+    $('#addb').on('click', function(e){
+    e.preventDefault();
+    $(this).attr('disabled', true); // disable submit button
+
+    let data = {}
+    const frm = $('#addfform')
+    $('input:text', frm).each(function(index, element){
+    data[$(this).attr('name')] = $(this).val();
     })
+
+    framework.beanCreate('{{constant('Config\\Framework::PROJECT')}}', data, function(ret){
+    $('#addf').modal('hide');  
+
+    var note = '<div class="card-box" data-id="{id}">'+
+        '<div class="card-box-header">'+
+            '<a href="{{base}}/project/{id}" class="card-link">'+
+                '<div class="card-content">'+
+                    '<h3 class="card-header-title ellipsis"><span id="project{id}">'+data["name"]+
+                        '</span></h3></div></a></div><div class="card-box-body"><div class="card-content">'+
+                '<p class="card-header-des ellipsis">0 note</p></div></div><nav class="card-action-container">'+
+            '<a class="card-action" id="infob{id}" title="{description}">{{i.fas("info")}}</a>'+
+            '<a class="card-action" id="editb{id}" title="edit" data-toggle="modal" data-target="#editf" data-name="{name}" data-description="{description}">{{i.edit}} </a>'+
+            '<a class="card-action ajax-button" title="delete">{{i.delete("delb")}}</a></nav></div>';
+
+    $("#addcontainer").before(note.replaceAll("{id}",ret).replaceAll("{name}",data["name"]).replaceAll("{description}",data["description"]));
+    }, '#addb');
+    });
+
+
+    $('#editfform').on('submit', false).parsley()
+
+    $('#editb').on('click', function(e){
+    e.preventDefault();
+    $(this).attr('disabled', true); // disable submit button
+
+    let data = {}
+    const frm = $('#editfform')
+    $('input:text,input:hidden', frm).each(function(index, element){
+    data[$(this).attr('name')] = $(this).val();
+    })     
+    $.ajax({
+    type:"POST",
+    url: "ajax/edit/project",
+    data: data,
+    success: function(d){
+    $("#project"+data["id"]).html(data["name"]);
+    $("#editb"+data["id"]).data("name",data["name"]);
+    $("#editb"+data["id"]).data("description",data["description"]);
+    $("#infob"+data["id"]).attr("title",data["description"]);
+    },
+    error: function(xhr,s,e){
+    bootbox.alert(xhr.responseText);
+    }
+    }).always(function(){
+    $('#editf').modal('hide');
+    $('#editb').attr('disabled', false);
+    });
+    });
+
+    $("body").on("click", ".card-action.ajax-button", {bean: '{{constant('Config\\FRAMEWORK::PROJECT')}}', clicks: clicks}, framework.tableClick);
+
+    $("body").on("click", ".card-action[data-target='#editf']", function (event) {
+    var id = $(this).parent().parent().data("id");
+    $("#editID").val(id);
+    $("#editName").val($(this).data("name"));
+    $("#editDescription").val($(this).data("description")); 
+    });
 {% endblock onload %}
 
 {% block header %}
     <section class="col-md-12 mt-5">
-        <h1 class="text-center">Header</h1>
+        <h1 class="text-center">Projects </h1>
     </section>
 {% endblock header %}
 
 {% block main %}
     <section class="row">
-        <aside class="col">
-            <p>Left</p>
-        </aside>
-        <article class="col-md-8">
-            <div class="jumbotron">
-                This is the middle column
+        {% if context.user %}
+            <div id="projects">
+                {% for bean in siteinfo.fetch("project","user_id=?",[context.user.id]) %}
+                    <div class="card-box" data-id="{{bean.id}}">
+                        <div class="card-box-header">
+                            <a href="{{base}}/project/{{bean.id}}" class="card-link">
+                                <div class="card-content">
+                                    <h3 class="card-header-title ellipsis"><span id="project{{bean.id}}">{{ bean.name }}</span></h3>
+                                </div>
+                            </a>
+                        </div>
+                        <div class="card-box-body">
+                            <div class="card-content">
+                                <p class="card-header-des ellipsis">
+                                    {{ bean.noOfNotes }} {{ (bean.noOfNotes > 1) ? 'notes' : 'note'}} 
+                                </p>
+                            </div>
+                        </div>
+                        <nav class="card-action-container">
+                            <a class="card-action" id="infob{{bean.id}}" title="{{ (bean.description is empty) ? "No description" :  bean.description}}">{{i.fas("info")}}</a>
+                            <a class="card-action" id="editb{{bean.id}}" title="edit" data-toggle="modal" data-target="#editf" data-name="{{ bean.name }}" data-description="{{ bean.description }}">{{i.edit}} </a>
+                            <a class="card-action ajax-button" title="delete">{{i.delete('delb')}}</a>
+                        </nav>
+                    </div>
+                {% endfor %}
+
+                <div class="card-box" id="addcontainer">
+                    <div class="card-button-container">
+                        <a class="card-big-button" title="edit" data-toggle="modal" data-target="#addf">{{i.fas('plus','fa-2x')}}</a>      
+                    </div>
+                </div>
             </div>
-            <button id="alert" class="btn btn-lg btn-info" type="button">Alert</button>
-        </article>
-        <aside id="rightbar" class="col">
-            <p>Right</p>
-        </aside>
+            {{m.open({id: 'addf', title: 'Add a project'})}}
+            <div class="modal-body">
+                {{ f.startform({method: "post",id: "addfform"})}}
+                {{ f.text({label: ' Name', ph: 'Project Name', name: 'name', required: 1})}}
+                {{ f.text({label: 'Description', ph: 'Short description', name: 'description'})}}
+                {{ f.endform() }}
+            </div>
+            {{ m.close({action: 'Add', id: 'addb'})}}
+
+            {{m.open({id: 'editf', title: 'Edit project'})}}
+            <div class="modal-body">
+                {{ f.startform({method: "post",id: "editfform"})}}
+                {{ f.hidden({name: 'id', value: "-1",id:"editID"})}}
+                {{ f.text({label: ' Name', ph: 'Project Name', name: 'name',id:"editName", required: 1})}}
+                {{ f.text({label: 'Description', ph: 'Short description', name: 'description',id:"editDescription"})}}
+                {{ f.endform() }}
+            </div>
+            {{ m.close({action: 'Save', id: 'editb'})}}
+        {% else %}
+            <a href="/login">Click here to login first</a>
+        {% endif %}
     </section>
 {% endblock main %}
 
 {% block footer %}
-    <section class="col-md-12">
-        <p class="text-center">Footer</p>
-    </section>
 {% endblock footer %}

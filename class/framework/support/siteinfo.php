@@ -31,6 +31,8 @@
             FW::ROLECONTEXT,
             FW::ROLENAME,
             FW::USER,
+            FW::PROJECT,
+            FW::NOTE,             
         ];
 /**
  * @var \Support\Context  The Context object

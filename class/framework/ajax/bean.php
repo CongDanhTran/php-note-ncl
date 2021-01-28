@@ -30,6 +30,9 @@
             FW::ROLENAME    => [ TRUE, [[FW::FWCONTEXT, FW::ADMINROLE]], [] ],
             FW::TABLE       => [ TRUE, [[FW::FWCONTEXT, FW::ADMINROLE]], [] ],
             FW::USER        => [ TRUE, [[FW::FWCONTEXT, FW::ADMINROLE]], [] ],
+            FW::PROJECT     => [ TRUE, [], [] ],
+            FW::NOTE        => [ TRUE, [], [] ],
+            FW::UPLOAD      => [ TRUE, [], [] ],
         ];
 /**
  * @var string
